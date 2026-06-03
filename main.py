@@ -1,12 +1,34 @@
+import csv
 from tabulate import tabulate
 
 
+def indlaes_kampe_fra_csv(filnavn):
+    kampe = []
+    try:
+        with open(filnavn, mode="r", encoding="utf-8") as fil:
+            # DictReader bruger den første linje i CSV-filen som overskrifter (nøgler)
+            csv_laeser = csv.DictReader(fil)
+            for raekke in csv_laeser:
+                kampe.append(
+                    {
+                        "modstander": raekke["modstander"],
+                        "egne_point": int(raekke["egne_point"]),
+                        "modstander_point": int(raekke["modstander_point"]),
+                    }
+                )
+    except FileNotFoundError:
+        print(f"⚠ Fejl: Kunne ikke finde datafilen '{filnavn}'.")
+    return kampe
+
+
 def beregn_statistik(kampe):
+    if not kampe:
+        return None
+
     samlet_vundet = 0
     samlet_point_vundet = 0
     samlet_point_tabt = 0
 
-    # Loop igennem alle kampe og tæl samlet_vundet
     for kamp in kampe:
         samlet_point_vundet += kamp["egne_point"]
         samlet_point_tabt += kamp["modstander_point"]
@@ -14,9 +36,8 @@ def beregn_statistik(kampe):
         if kamp["egne_point"] > kamp["modstander_point"]:
             samlet_vundet += 1
 
-    # Beregn procenter
     antal_kampe = len(kampe)
-    win_rate = (samlet_vundet / antal_kampe) * 100 if antal_kampe > 0 else 0
+    win_rate = (samlet_vundet / antal_kampe) * 100
 
     return {
         "antal_kampe": antal_kampe,
@@ -28,18 +49,19 @@ def beregn_statistik(kampe):
 
 
 def main():
-    # Vores badminton data (Test-kampe i KJP-Lab)
-    badminton_kampe = [
-        {"modstander": "Thomas", "egne_point": 21, "modstander_point": 18},
-        {"modstander": "Kim H", "egne_point": 19, "modstander_point": 21},
-        {"modstander": "Kim P", "egne_point": 21, "modstander_point": 15},
-        {"modstander": "Thomas", "egne_point": 22, "modstander_point": 20},
-    ]
+    filnavn = "kampe.csv"
 
-    # Kør beregningen
+    # Indlæs data eksternt i stedet for at hårdkode det
+    badminton_kampe = indlaes_kampe_fra_csv(filnavn)
+
+    # Beregn statistikken
     stats = beregn_statistik(badminton_kampe)
 
-    # Forbered data til vores smukke tabel
+    if stats is None:
+        print("Ingen data tilgængelig for beregning.")
+        return
+
+    # Forbered data til tabellen
     tabel_data = [
         ["Antal Kampe Spillet", stats["antal_kampe"]],
         ["Kampe Vundet", stats["vundet"]],
@@ -48,8 +70,8 @@ def main():
         ["Point Tabt (Modstander)", stats["point_tabt"]],
     ]
 
-    # Print resultatet ud i terminalen
-    print("\n=== KJP-LAB BADMINTON STATISTIK ===")
+    # Print resultatet i terminalen
+    print(f"\n=== KJP-LAB BADMINTON STATISTIK (Hentet fra {filnavn}) ===")
     print(tabulate(tabel_data, headers=["Metrik", "Resultat"], tablefmt="fancy_grid"))
 
 
