@@ -1,7 +1,10 @@
-modstander,egne_point,modstander_point
-Thomas,21,18
-Kim H,19,21
-Kim P,21,15
-Thomas,22,20
-Kim H,21,16
-Thomas,19,21
+dato,kamp_id,spiller_1,spiller_2,point_1,point_2
+02-06-2026,1,TH,KH,21,13
+02-06-2026,1,TH,KH,21,17
+02-06-2026,1,TH,KH,16,21
+02-06-2026,2,TH,KP,21,15
+02-06-2026,2,TH,KP,25,27
+02-06-2026,2,TH,KP,14,21
+02-06-2026,3,KP,KH,21,12
+02-06-2026,3,KP,KH,21,16
+02-06-2026,3,KP,KH,21,13
