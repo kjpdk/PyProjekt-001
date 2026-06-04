@@ -1,4 +1,9 @@
+cache/
+venv/
 .venv/
 __pycache__/
+env/
+.env/
+.env
 *.pyc
 .ruff_cache/
